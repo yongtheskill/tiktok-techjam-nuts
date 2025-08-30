@@ -46,7 +46,7 @@ function Content() {
           <div className='w-full max-w-md mx-auto'>
             <div className='text-center mb-8'>
               <h1 className='text-4xl font-bold text-primary mb-4'>TTCoin</h1>
-              <p className='text-xl text-secondary'>Stream, gift, and earn with crypto</p>
+              <p className='text-xl text-secondary'>Stream, gift, and earn with ease!</p>
             </div>
             <SignInForm />
           </div>

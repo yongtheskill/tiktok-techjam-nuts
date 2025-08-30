@@ -68,6 +68,12 @@ const applicationTables = {
   })
     .index('by_livestream', ['livestreamId'])
     .index('by_user', ['userId']),
+
+  analysisSessions: defineTable({
+    owner: v.id('users'),
+    token: v.string(),
+    expires: v.number(),
+  }).index('by_owner', ['owner']),
 };
 
 export default defineSchema(

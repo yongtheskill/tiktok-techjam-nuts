@@ -1,11 +1,16 @@
-import { useQuery } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { formatCoins } from '../lib/utils';
+import { useState } from 'react';
+import { AnalysisWindow } from './ui/AnalysisWindow';
 
 export function AdminDashboard() {
   const users = useQuery(api.users.getAllUsers);
   const livestreams = useQuery(api.livestreams.getAllLivestreams);
   const transactions = useQuery(api.transactions.getTransactionHistory);
+  const createAnalysisSession = useMutation(api.analysis.createAnalysisSession);
+
+  const [analysisOpen, setAnalysisOpen] = useState(false);
 
   if (users === undefined || livestreams === undefined || transactions === undefined) {
     return (
@@ -17,6 +22,13 @@ export function AdminDashboard() {
 
   const activeStreams = livestreams.filter((stream) => stream.isActive);
   const completedTransactions = transactions.filter((tx) => tx.status === 'completed');
+
+  const openAnalysisSession = async () => {
+    const session = await createAnalysisSession();
+    window.localStorage.setItem('analysisSessionToken', session.token);
+    console.log('Analysis session created:', session);
+    setAnalysisOpen(true);
+  };
 
   return (
     <div>
@@ -118,7 +130,17 @@ export function AdminDashboard() {
         {/* Recent Transactions */}
         <div className='bg-white rounded-lg shadow-sm border border-gray-200'>
           <div className='px-6 py-4 border-b border-gray-200'>
-            <h2 className='text-lg font-semibold text-gray-900'>Recent Transactions</h2>
+            <div className='flex items-center justify-between'>
+              <h2 className='text-lg font-semibold text-gray-900'>Recent Transactions</h2>
+              <button
+                className='ml-4 px-3 py-1 rounded bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition'
+                type='button'
+                onClick={() => {
+                  openAnalysisSession().catch(() => {});
+                }}>
+                Analyse
+              </button>
+            </div>
           </div>
           <div className='overflow-x-auto'>
             <table className='w-full'>
@@ -206,6 +228,8 @@ export function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {analysisOpen && <AnalysisWindow onClose={() => setAnalysisOpen(false)} />}
     </div>
   );
 }
