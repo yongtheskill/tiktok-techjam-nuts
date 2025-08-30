@@ -14,6 +14,7 @@ contract PaymentProcessor is Ownable {
     TTCoin public immutable ttCoin;
     SessionManager public immutable sessionManager;
 
+    event LogMessage(string message);
     event PaymentMade(
         address indexed from,
         address indexed to,
@@ -23,10 +24,20 @@ contract PaymentProcessor is Ownable {
     );
     event CoinsSold(address indexed user, uint256 amount);
 
-    constructor(address _coinAddress, address _sessionManagerAddress) Ownable(msg.sender) {
-        require(_coinAddress != address(0) && _sessionManagerAddress != address(0), "Invalid addresses");
+    constructor(
+        address _coinAddress,
+        address _sessionManagerAddress
+    ) Ownable(msg.sender) {
+        require(
+            _coinAddress != address(0) && _sessionManagerAddress != address(0),
+            "Invalid addresses"
+        );
         ttCoin = TTCoin(_coinAddress);
         sessionManager = SessionManager(_sessionManagerAddress);
+    }
+
+    function hi(uint x) public pure returns (uint) {
+        return x + x;
     }
 
     /**
@@ -35,18 +46,29 @@ contract PaymentProcessor is Ownable {
      * The sender must first approve this contract to spend their TTCoin.
      */
     function pay(address recipient, uint256 amount) public {
-        require(amount > 0, "PaymentProcessor: Amount must be greater than zero");
-        
+        emit LogMessage("PaymentProcessor: pay called");
+        require(
+            amount > 0,
+            "PaymentProcessor: Amount must be greater than zero"
+        );
+        emit LogMessage("PaymentProcessor: Amount is valid");
         // 1. Check if the recipient has an active session
-        (bool isActive, uint8 fee) = sessionManager.getSessionDetails(recipient);
-        require(isActive, "PaymentProcessor: Recipient is not accepting payments");
+        (bool isActive, uint32 fee) = sessionManager.getSessionDetails(
+            recipient
+        );
+        emit LogMessage("PaymentProcessor: Fetched session details");
+        require(
+            isActive,
+            "PaymentProcessor: Recipient is not accepting payments"
+        );
 
+        emit LogMessage("PaymentProcessor: Recipient session is active");
         // 2. Calculate fee and the recipient's share
         uint256 feeAmount = (amount * fee) / 100000;
         uint256 recipientAmount = amount - feeAmount;
 
         address sender = msg.sender;
-        
+
         // 3. Pull the total amount from the sender to this contract.
         // This is allowed because this contract is authorized in TTCoin.
         ttCoin.transferFrom(sender, address(this), amount);
@@ -68,11 +90,15 @@ contract PaymentProcessor is Ownable {
      * The user must first approve this contract to spend their TTCoin.
      */
     function sellCoins(uint256 amount) public {
-        require(amount > 0, "PaymentProcessor: Amount must be greater than zero");
-        
+        // require(
+        //     amount > 0,
+        //     "PaymentProcessor: Amount must be greater than zero"
+        // );
+
         // This contract, being authorized, calls the burnFrom function on the coin contract.
         ttCoin.burnFrom(msg.sender, amount);
+        // ttCoin.isAuthorized(address(this));
 
-        emit CoinsSold(msg.sender, amount);
+        // emit CoinsSold(msg.sender, amount);
     }
 }

@@ -9,15 +9,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * The owner can start and stop sessions, setting a fee percentage for each.
  */
 contract SessionManager is Ownable {
-
     struct Session {
         bool isActive;
-        uint8 feePercentage; // Share * 100,000 e.g., 1000 for 1% fee
+        uint32 feeRatio; // Share * 100,000 e.g., 1000 for 1% fee
     }
 
     mapping(address => Session) public sessions;
 
-    event SessionStarted(address indexed user, uint8 feePercentage);
+    event SessionStarted(address indexed user, uint32 feeRatio);
     event SessionEnded(address indexed user);
 
     constructor() Ownable(msg.sender) {}
@@ -25,18 +24,15 @@ contract SessionManager is Ownable {
     /**
      * @dev Starts a payment receiving session for a user. Only callable by the owner.
      * @param user The address of the user who will receive payments.
-     * @param feePercentage The fee percentage (0-100) to be taken from payments.
+     * @param feeRatio The fee ratio (0-100000) to be taken from payments.
      */
-    function startSession(address user, uint8 feePercentage) public onlyOwner {
+    function startSession(address user, uint32 feeRatio) public onlyOwner {
         require(user != address(0), "SessionManager: Cannot use zero address");
-        require(feePercentage <= 100000, "SessionManager: Fee cannot exceed 100%");
+        require(feeRatio <= 100000, "SessionManager: Fee cannot exceed 100%");
 
-        sessions[user] = Session({
-            isActive: true,
-            feePercentage: feePercentage
-        });
+        sessions[user] = Session({isActive: true, feeRatio: feeRatio});
 
-        emit SessionStarted(user, feePercentage);
+        emit SessionStarted(user, feeRatio);
     }
 
     /**
@@ -53,8 +49,10 @@ contract SessionManager is Ownable {
      * @dev Gets the session details for a user.
      * @return A boolean indicating if the session is active and the fee percentage.
      */
-    function getSessionDetails(address user) public view returns (bool, uint8) {
+    function getSessionDetails(
+        address user
+    ) public view returns (bool, uint32) {
         Session memory session = sessions[user];
-        return (session.isActive, session.feePercentage);
+        return (session.isActive, session.feeRatio);
     }
 }

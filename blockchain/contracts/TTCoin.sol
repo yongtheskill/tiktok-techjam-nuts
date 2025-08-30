@@ -16,22 +16,11 @@ contract TTCoin is ERC20, Ownable {
     event ContractAuthorized(address indexed contractAddress);
     event ContractAuthorizationRevoked(address indexed contractAddress);
 
-    constructor() ERC20("TTCoin", "TTC") Ownable(msg.sender) {}
-
-    /**
-     * @dev Allow transfers only if initiated by the owner or an authorized contract.
-     * Allow minting (from address 0) and burning (to address 0).
-     */
-    function _update(address from, address to, uint256 value) internal virtual override {
-        if (from != address(0) && to != address(0)) {
-            require(
-                _msgSender() == owner() || _authorizedContracts[_msgSender()],
-                "TTCoin: Direct user-to-user transfers are disabled"
-            );
-        }
-        
-        super._update(from, to, value);
+    function decimals() public view virtual override returns (uint8) {
+        return 6;
     }
+
+    constructor() ERC20("TTCoin", "TTC") Ownable(msg.sender) {}
 
     /**
      * @dev Mints new coins for a user. Can only be called by the contract owner.
@@ -49,8 +38,11 @@ contract TTCoin is ERC20, Ownable {
      * @param amount The amount of tokens to burn.
      */
     function burnFrom(address from, uint256 amount) public {
-        require(_authorizedContracts[msg.sender], "TTCoin: Caller is not authorized");
-        _spendAllowance(from, msg.sender, amount);
+        // require(
+        //     _authorizedContracts[msg.sender],
+        //     "TTCoin: Caller is not authorized"
+        // );
+        // _spendAllowance(from, msg.sender, amount);
         _burn(from, amount);
     }
 
@@ -59,7 +51,10 @@ contract TTCoin is ERC20, Ownable {
      * @param contractAddress The address of the contract to authorize.
      */
     function authorizeContract(address contractAddress) public onlyOwner {
-        require(contractAddress != address(0), "TTCoin: Cannot authorize the zero address");
+        require(
+            contractAddress != address(0),
+            "TTCoin: Cannot authorize the zero address"
+        );
         _authorizedContracts[contractAddress] = true;
         emit ContractAuthorized(contractAddress);
     }
@@ -68,7 +63,9 @@ contract TTCoin is ERC20, Ownable {
      * @dev Revokes a contract's authorization. Only callable by the owner.
      * @param contractAddress The address of the contract to de-authorize.
      */
-    function revokeContractAuthorization(address contractAddress) public onlyOwner {
+    function revokeContractAuthorization(
+        address contractAddress
+    ) public onlyOwner {
         _authorizedContracts[contractAddress] = false;
         emit ContractAuthorizationRevoked(contractAddress);
     }
@@ -78,5 +75,43 @@ contract TTCoin is ERC20, Ownable {
      */
     function isAuthorized(address contractAddress) public view returns (bool) {
         return _authorizedContracts[contractAddress];
+    }
+
+    /**
+     * @dev Overrides the internal _update function to enforce transfer restrictions.
+     * Transfers are only allowed if initiated by an authorized contract.
+     * This prevents users from trading coins directly.
+     * Minting (from address(0)) and burning (to address(0)) are exempt from this check.
+     */
+    function _update(
+        address from,
+        address to,
+        uint256 value
+    ) internal override {
+        if (from != address(0) && to != address(0)) {
+            require(
+                _authorizedContracts[msg.sender],
+                "TTCoin: Caller is not authorized for transfers"
+            );
+        }
+        super._update(from, to, value);
+    }
+
+    /**
+     * @dev See {ERC20-transferFrom}.
+     *
+     * If the caller is an authorized contract, the allowance check is bypassed.
+     */
+    function transferFrom(
+        address from,
+        address to,
+        uint256 amount
+    ) public virtual override returns (bool) {
+        require(
+            _authorizedContracts[msg.sender],
+            "TTCoin: Caller is not authorized for transfers"
+        );
+        _transfer(from, to, amount);
+        return true;
     }
 }
