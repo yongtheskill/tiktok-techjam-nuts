@@ -1,8 +1,3 @@
-import '@lynx-js/web-core/index.css';
-import '@lynx-js/web-elements/index.css';
-import '@lynx-js/web-core';
-import '@lynx-js/web-elements/all';
-
 export function AnalysisWindow({ onClose }: { onClose: () => void }) {
   //   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,7 +23,7 @@ export function AnalysisWindow({ onClose }: { onClose: () => void }) {
             <div className='h-full flex items-center justify-center'>
               {
                 // @ts-expect-error lynx integration
-                <lynx-view style={{ height: '100%', width: '100%' }} url='/main.web.bundle' />
+                <lynx-view url='/main.web.bundle' />
               }
             </div>
           </div>

@@ -5,6 +5,14 @@ import { pluginReactLynx } from '@lynx-js/react-rsbuild-plugin';
 import { pluginTypeCheck } from '@rsbuild/plugin-type-check';
 
 export default defineConfig({
+  environments: {
+    web: {
+      output: {
+        assetPrefix: '/',
+      },
+    },
+    lynx: {},
+  },
   plugins: [
     pluginQRCode({
       schema(url) {
@@ -15,12 +23,4 @@ export default defineConfig({
     pluginReactLynx(),
     pluginTypeCheck(),
   ],
-  environments: {
-    web: {
-      output: {
-        assetPrefix: '/',
-      },
-    },
-    lynx: {},
-  },
 });

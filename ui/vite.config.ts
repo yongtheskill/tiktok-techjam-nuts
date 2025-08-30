@@ -8,15 +8,36 @@ const __dirname = path.dirname(__filename);
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
-  build: {
-    target: 'esnext',
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      target: 'esnext',
-    },
-    exclude: ['@lynx-js/web-core', '@lynx-js/web-mainthread-apis'],
-  },
+  //   build: {
+  //     target: 'esnext',
+  //   },
+  //   optimizeDeps: {
+  //     //   esbuildOptions: {
+  //     //     target: 'esnext',
+  //     //   },
+  //     exclude: [
+  //       '@lynx-js/web-core',
+  //       '@lynx-js/web-elements',
+  //       './node_modules/@lynx-js/web-core',
+  //       './node_modules/@lynx-js/web-mainthread-apis',
+  //     ],
+  //   },
+  //   build: {
+  //     rollupOptions: {
+  //       external: [
+  //         '@lynx-js/web-core',
+  //         '@lynx-js/web-elements',
+  //         '/@lynx-js/web-core',
+  //         '/@lynx-js/web-elements/all',
+  //         '/@lynx-js/web-core/index.css',
+  //         '/@lynx-js/web-elements/index.css',
+  //       ],
+  //     },
+  //     commonjsOptions: {
+  //       exclude: ['@lynx-js/web-core', '@lynx-js/web-elements'],
+  //     },
+  //   },
+
   publicDir: './analysis/dist',
   plugins: [
     wasm(),

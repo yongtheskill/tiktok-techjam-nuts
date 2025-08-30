@@ -7,6 +7,10 @@ import { polygonAmoy } from 'wagmi/chains';
 import { metaMask } from 'wagmi/connectors';
 import './index.css';
 import App from './App';
+import '@lynx-js/web-core/index.css';
+import '@lynx-js/web-elements/index.css';
+import '@lynx-js/web-core';
+import '@lynx-js/web-elements/all';
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 
