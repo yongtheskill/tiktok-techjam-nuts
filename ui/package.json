@@ -5,16 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "npm-run-all --parallel dev:frontend dev:backend",
-    "dev:frontend": "vite --open",
+    "dev:frontend": "rsbuild dev",
     "dev:backend": "convex dev",
-    "build": "vite build",
-    "lint": "tsc -p convex -noEmit --pretty false && tsc -p . -noEmit --pretty false && convex dev --once && vite build"
+    "build": "rsbuild build",
+    "lint": "tsc -p convex -noEmit --pretty false && tsc -p . -noEmit --pretty false && convex dev --once && rsbuild build"
   },
   "dependencies": {
     "@convex-dev/auth": "^0.0.80",
     "@lynx-js/web-core": "^0.15.7",
     "@lynx-js/web-elements": "^0.8.4",
     "@metamask/sdk": "^0.33.0",
+    "@rsbuild/core": "~1.4.0",
     "@tanstack/react-query": "^5.85.5",
     "clsx": "^2.1.1",
     "convex": "^1.24.2",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@rsbuild/plugin-react": "^1.4.0",
     "@types/node": "^22.13.10",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
@@ -45,7 +47,6 @@
     "tailwindcss": "~3",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
-    "vite": "^6.2.0",
     "vite-plugin-wasm": "^3.5.0"
   }
 }
