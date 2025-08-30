@@ -12,7 +12,6 @@ import '@lynx-js/web-elements/index.css';
 import '@lynx-js/web-core';
 import '@lynx-js/web-elements/all';
 
-console.log('HI');
 const convex = new ConvexReactClient(
   import.meta.env?.VITE_CONVEX_URL ?? 'https://hushed-reindeer-478.convex.cloud'
 );

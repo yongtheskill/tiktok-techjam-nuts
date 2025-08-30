@@ -26,7 +26,6 @@ export function AdminDashboard() {
   const openAnalysisSession = async () => {
     const session = await createAnalysisSession();
     window.localStorage.setItem('analysisSessionToken', session.token);
-    console.log('Analysis session created:', session);
     setAnalysisOpen(true);
   };
 

@@ -86,13 +86,10 @@ export const useAnalysisData = (token: string) => {
         if (result.value && Array.isArray(result.value)) {
           const transformedData = transformApiResponse(result.value);
           setData(transformedData);
-          console.log('API Data:', result.value);
-          console.log('Transformed Data:', transformedData);
         } else {
           // Fall back to mock data
           const mockTransformedData = transformApiResponse(mockRawData);
           setData(mockTransformedData);
-          console.log('Using mock data:', mockTransformedData);
         }
       })
       .catch((err) => {
