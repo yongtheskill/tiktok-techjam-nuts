@@ -1,55 +1,95 @@
-import { useCallback, useEffect, useState } from '@lynx-js/react'
+import { useEffect, useState } from '@lynx-js/react';
+import './App.css';
+import './Font.css';
+import { Main } from './Main.js';
 
-import './App.css'
-import arrow from './assets/arrow.png'
-import lynxLogo from './assets/lynx-logo.png'
-import reactLynxLogo from './assets/react-logo.png'
+export function App(props: { onRender?: () => void }) {
+  const [analysisSessionToken, setAnalysisSessionToken] = useState<
+    string | null
+  >(null);
+  const [userName, setUserName] = useState<string | null>(null);
 
-export function App(props: {
-  onRender?: () => void
-}) {
-  const [alterLogo, setAlterLogo] = useState(false)
+  props.onRender?.();
 
   useEffect(() => {
-    console.info('Hello, ReactLynx')
-  }, [])
-  props.onRender?.()
+    fetch('https://hushed-reindeer-478.convex.cloud/api/mutation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        path: 'analysis:getAnalysisSession',
+        args: {},
+        format: 'json',
+      }),
+    }).then((response) => {
+      response.json().then((data) => {
+        setAnalysisSessionToken(data.value.token);
 
-  const onTap = useCallback(() => {
-    'background only'
-    setAlterLogo(prevAlterLogo => !prevAlterLogo)
-  }, [])
+        fetch('https://hushed-reindeer-478.convex.cloud/api/query', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            path: 'analysis:getAnalysisSessionOwner',
+            args: { token: data.value.token },
+            format: 'json',
+          }),
+        }).then((response) => {
+          response.json().then((data) => {
+            setUserName(data.value);
+          });
+        });
+      });
+    });
+  }, []);
 
   return (
-    <view>
-      <view className='Background' />
-      <view className='App'>
-        <view className='Banner'>
-          <view className='Logo' bindtap={onTap}>
-            {alterLogo
-              ? <image src={reactLynxLogo} className='Logo--react' />
-              : <image src={lynxLogo} className='Logo--lynx' />}
-          </view>
-          <text className='Title'>React</text>
-          <text className='Subtitle'>on Lynx</text>
-        </view>
-        <view className='Content'>
-          <image src={arrow} className='Arrow' />
-          <text className='Description'>Tap the logo and have fun!</text>
-          <text className='Hint'>
-            Edit<text
+    <view style={{ width: '100%', height: '100vh', overflow: 'hidden' }}>
+      {analysisSessionToken == null || userName == null ? (
+        <view
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '1.5rem',
+          }}
+        >
+          <view style={{ textAlign: 'center' }}>
+            <view
               style={{
-                fontStyle: 'italic',
-                color: 'rgba(255, 255, 255, 0.85)',
+                width: '32px',
+                height: '32px',
+                border: '4px solid #3b82f6',
+                borderTop: '4px solid transparent',
+                borderRadius: '50%',
+                margin: '0 auto 16px',
+                animation: 'spin 1s linear infinite',
               }}
-            >
-              {' src/App.tsx '}
-            </text>
-            to see updates!
-          </text>
+            />
+          </view>
         </view>
-        <view style={{ flex: 1 }} />
-      </view>
+      ) : (
+        <view style={{ height: '100%', overflow: 'hidden' }}>
+          {/* <text
+            style={{
+              fontSize: '10px',
+              fontWeight: 'bold',
+              color: '#aaa',
+              position: 'absolute',
+              top: '8px',
+              right: '16px',
+              zIndex: 1000,
+            }}
+          >
+            User: {userName ?? ''}
+          </text> */}
+          <Main token={analysisSessionToken} />
+        </view>
+      )}
     </view>
-  )
+  );
 }

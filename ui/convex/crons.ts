@@ -5,7 +5,7 @@ const crons = cronJobs();
 
 crons.interval(
   'clean transactions',
-  { minutes: 10 }, // every 10 minutes
+  { hours: 3 }, // every 3 hours
   internal.transactions.cleanupPendingTransactions
 );
 

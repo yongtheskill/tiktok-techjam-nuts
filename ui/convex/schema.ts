@@ -73,7 +73,10 @@ const applicationTables = {
     owner: v.id('users'),
     token: v.string(),
     expires: v.number(),
-  }).index('by_owner', ['owner']),
+    connected: v.boolean(),
+  })
+    .index('by_owner', ['owner'])
+    .index('by_token', ['token']),
 };
 
 export default defineSchema(

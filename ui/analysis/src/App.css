@@ -1,13 +1,31 @@
 :root {
-  background-color: #000;
-  --color-text: #fff;
+  background-color: #fff;
 }
-@keyframes Logo--spin {
+
+* {
+  font-family: 'Inter Tight', sans-serif;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
   }
 }
 
@@ -20,5 +38,51 @@
   }
   100% {
     transform: scale(1);
+  }
+}
+
+/* Enhanced card hover effects */
+.fraud-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.fraud-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* Risk level indicator animations */
+.risk-high {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border-left: 4px solid #dc2626;
+}
+
+.risk-medium {
+  background: linear-gradient(135deg, #fffbeb 0%, #fed7aa 100%);
+  border-left: 4px solid #d97706;
+}
+
+.risk-low {
+  background: linear-gradient(135deg, #f0fdf4 0%, #bbf7d0 100%);
+  border-left: 4px solid #059669;
+}
+
+/* Progress bar animations */
+.progress-bar {
+  transition: width 1s ease-in-out;
+}
+
+/* Glowing effect for alerts */
+.alert-glow {
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+  }
+  to {
+    box-shadow: 0 0 30px rgba(220, 38, 38, 0.5);
   }
 }
