@@ -1,6 +1,6 @@
 export const TOKEN_DECIMALS = 6;
 
-export const tokenAddress = '0xCc87B20c0D8BA095F32dBb29464784e3e2de642E';
+export const tokenAddress = '0xD5b40eE9FB895339e57951b4be5c6855B3Ad84C5';
 export const tokenAbi = [
   {
     inputs: [],
@@ -498,7 +498,7 @@ export const tokenAbi = [
   },
 ];
 
-export const paymentProcessorAddress = '0x292D7eE6D0de8C56fe30c13f8507EeA8CC4a7De6';
+export const paymentProcessorAddress = '0x2A9F2aa5C4cE98BF4E150D9FE05dDde04B0722F3';
 export const paymentProcessorAbi = [
   {
     inputs: [

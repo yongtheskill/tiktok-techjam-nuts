@@ -37,14 +37,14 @@ const COIN_ABI = [
         type: 'uint256',
       },
     ],
-    name: 'burn',
+    name: 'burnFrom',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
 ];
 
-const COIN_ADDRESS = '0xCc87B20c0D8BA095F32dBb29464784e3e2de642E';
+const COIN_ADDRESS = '0xD5b40eE9FB895339e57951b4be5c6855B3Ad84C5';
 
 /**
  * Mint ERC-20 tokens to a specified wallet address
@@ -245,7 +245,7 @@ export const sellTokens = action({
       const contract = new ethers.Contract(COIN_ADDRESS, COIN_ABI, wallet);
 
       // Call the burn function
-      const tx = await contract.burn(args.address, args.amount);
+      const tx = await contract.burnFrom(args.address, args.amount);
 
       // Wait for transaction confirmation
       const receipt = await tx.wait();

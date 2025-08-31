@@ -68,9 +68,12 @@ export const connectWallet = mutation({
 
     if (!user) throw new Error('User profile not found');
 
-    await ctx.db.patch(user._id, {
-      walletAddress: args.walletAddress,
-    });
+    // Only set wallet address if it's not already set
+    if (!user.walletAddress) {
+      await ctx.db.patch(user._id, {
+        walletAddress: args.walletAddress,
+      });
+    }
 
     return { success: true };
   },

@@ -14,7 +14,6 @@ contract PaymentProcessor is Ownable {
     TTCoin public immutable ttCoin;
     SessionManager public immutable sessionManager;
 
-    event LogMessage(string message);
     event PaymentMade(
         address indexed from,
         address indexed to,
@@ -36,33 +35,26 @@ contract PaymentProcessor is Ownable {
         sessionManager = SessionManager(_sessionManagerAddress);
     }
 
-    function hi(uint x) public pure returns (uint) {
-        return x + x;
-    }
-
     /**
      * @dev Allows a user (sender) to pay another user (recipient).
      * It checks for an active session, calculates the fee, and splits the payment.
      * The sender must first approve this contract to spend their TTCoin.
      */
     function pay(address recipient, uint256 amount) public {
-        emit LogMessage("PaymentProcessor: pay called");
         require(
             amount > 0,
             "PaymentProcessor: Amount must be greater than zero"
         );
-        emit LogMessage("PaymentProcessor: Amount is valid");
+
         // 1. Check if the recipient has an active session
         (bool isActive, uint32 fee) = sessionManager.getSessionDetails(
             recipient
         );
-        emit LogMessage("PaymentProcessor: Fetched session details");
         require(
             isActive,
             "PaymentProcessor: Recipient is not accepting payments"
         );
 
-        emit LogMessage("PaymentProcessor: Recipient session is active");
         // 2. Calculate fee and the recipient's share
         uint256 feeAmount = (amount * fee) / 100000;
         uint256 recipientAmount = amount - feeAmount;
@@ -82,23 +74,5 @@ contract PaymentProcessor is Ownable {
         }
 
         emit PaymentMade(sender, recipient, amount, feeAmount, recipientAmount);
-    }
-
-    /**
-     * @dev Allows a user to sell their coins back to the platform.
-     * This function burns the user's coins and emits an event for off-chain processing.
-     * The user must first approve this contract to spend their TTCoin.
-     */
-    function sellCoins(uint256 amount) public {
-        // require(
-        //     amount > 0,
-        //     "PaymentProcessor: Amount must be greater than zero"
-        // );
-
-        // This contract, being authorized, calls the burnFrom function on the coin contract.
-        ttCoin.burnFrom(msg.sender, amount);
-        // ttCoin.isAuthorized(address(this));
-
-        // emit CoinsSold(msg.sender, amount);
     }
 }

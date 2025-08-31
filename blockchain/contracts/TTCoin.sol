@@ -23,6 +23,42 @@ contract TTCoin is ERC20, Ownable {
     constructor() ERC20("TTCoin", "TTC") Ownable(msg.sender) {}
 
     /**
+     * @dev Allow transfers only if initiated by the owner or an authorized contract.
+     * Allow minting (from address 0) and burning (to address 0).
+     */
+    function _update(
+        address from,
+        address to,
+        uint256 value
+    ) internal virtual override {
+        if (from != address(0) && to != address(0)) {
+            require(
+                msg.sender == owner() || _authorizedContracts[msg.sender],
+                "TTCoin: Direct user-to-user transfers are disabled"
+            );
+        }
+
+        super._update(from, to, value);
+    }
+
+    /**
+     * @dev See {ERC20-transferFrom}.
+     * If the caller is an authorized contract, the allowance check is bypassed.
+     */
+    function transferFrom(
+        address from,
+        address to,
+        uint256 amount
+    ) public virtual override returns (bool) {
+        require(
+            _authorizedContracts[msg.sender],
+            "TTCoin: Caller is not authorized for transfers"
+        );
+        _transfer(from, to, amount);
+        return true;
+    }
+
+    /**
      * @dev Mints new coins for a user. Can only be called by the contract owner.
      * @param to The address that will receive the minted tokens.
      * @param amount The amount of tokens to mint.
@@ -32,17 +68,11 @@ contract TTCoin is ERC20, Ownable {
     }
 
     /**
-     * @dev Burns a user's tokens. Designed to be called by an authorized contract
-     * (like PaymentProcessor) after the user has approved it.
+     * @dev Burns a user's tokens.
      * @param from The address whose tokens are being burned.
      * @param amount The amount of tokens to burn.
      */
-    function burnFrom(address from, uint256 amount) public {
-        // require(
-        //     _authorizedContracts[msg.sender],
-        //     "TTCoin: Caller is not authorized"
-        // );
-        // _spendAllowance(from, msg.sender, amount);
+    function burnFrom(address from, uint256 amount) public onlyOwner {
         _burn(from, amount);
     }
 
@@ -75,43 +105,5 @@ contract TTCoin is ERC20, Ownable {
      */
     function isAuthorized(address contractAddress) public view returns (bool) {
         return _authorizedContracts[contractAddress];
-    }
-
-    /**
-     * @dev Overrides the internal _update function to enforce transfer restrictions.
-     * Transfers are only allowed if initiated by an authorized contract.
-     * This prevents users from trading coins directly.
-     * Minting (from address(0)) and burning (to address(0)) are exempt from this check.
-     */
-    function _update(
-        address from,
-        address to,
-        uint256 value
-    ) internal override {
-        if (from != address(0) && to != address(0)) {
-            require(
-                _authorizedContracts[msg.sender],
-                "TTCoin: Caller is not authorized for transfers"
-            );
-        }
-        super._update(from, to, value);
-    }
-
-    /**
-     * @dev See {ERC20-transferFrom}.
-     *
-     * If the caller is an authorized contract, the allowance check is bypassed.
-     */
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) public virtual override returns (bool) {
-        require(
-            _authorizedContracts[msg.sender],
-            "TTCoin: Caller is not authorized for transfers"
-        );
-        _transfer(from, to, amount);
-        return true;
     }
 }

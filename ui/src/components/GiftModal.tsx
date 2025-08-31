@@ -17,7 +17,7 @@ export function GiftModal({ stream, onClose }: GiftModalProps) {
   const [pendingTransactionIds, setPendingTransactionIds] = useState<any[]>([]);
   const { address } = useAccount();
 
-  const { writeContract, data: hash, error, isPending } = useWriteContract();
+  const { writeContract, data: hash, error, isPending } = useWriteContract({});
 
   const { isLoading: isConfirmingTransaction, isSuccess: isConfirmedTransaction } =
     useWaitForTransactionReceipt({

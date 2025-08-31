@@ -13,7 +13,7 @@ export function CashOutModal({ onClose }: { onClose: () => void }) {
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const sellTokens = useAction(api.wallet.sellTokens);
 
-  const handleTopUp = async () => {
+  const handleCashOut = async () => {
     if (!user || !address) return;
 
     setIsWithdrawing(true);
@@ -72,7 +72,7 @@ export function CashOutModal({ onClose }: { onClose: () => void }) {
                     <span className='text-gray-500'>coins</span>
                   </div>
                 </div>
-                <div>={(amount * 0.097).toFixed(2)} SGD</div>
+                <div>={(amount * 0.0097).toFixed(2)} SGD</div>
               </div>
               <div className='mb-6'>
                 <label className='block text-sm font-medium text-gray-700 mb-2'>Withdraw To</label>
@@ -112,7 +112,7 @@ export function CashOutModal({ onClose }: { onClose: () => void }) {
             </button>
             <button
               onClick={() => {
-                handleTopUp().catch(() => {});
+                handleCashOut().catch(() => {});
               }}
               disabled={isWithdrawing}
               className='flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
