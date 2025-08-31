@@ -32,7 +32,7 @@ We chose a modern, scalable, and robust tech stack to bring TTCoin to life, ensu
 - **Smart Contracts**: **Solidity** The core logic of our system is encapsulated in smart contracts written in Solidity. These contracts are deployed on the Polygon network and are the backbone of our trustless system.
 The real-time, on-chain revenue splitting is a direct result of this carefully chosen stack. The use of smart contracts to automatically and transparently distribute funds the moment a gift is sent is a significant leap forward from traditional, opaque payment systems.
 
-![Smart Contract System Diagram](https://raw.githubusercontent.com/yongtheskill/tiktok-techjam-nuts/refs/heads/main/docs/BlockchainDesign.png)
+![Smart Contract System Diagram](https://raw.githubusercontent.com/yongtheskill/tiktok-techjam-nuts/refs/heads/main/docs/BlockchainDesignDiagram.png)
 Smart Contract System Diagram
 
 ## What's Next
